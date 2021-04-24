@@ -6,7 +6,7 @@
 
 #Imports
 import pygame, sys, math, random, time
-import Animations
+import Animations, Sprites as sp
 
 #Initialzing
 pygame.init()
@@ -70,296 +70,157 @@ for k in range(numberOfRealms):
       enemies.append(pygame.sprite.Group())
       allies.append(pygame.sprite.Group())
 
-animations = Animations.loadAnimations()
-
-class AnimatedSprite(pygame.sprite.Sprite):
-      def changeAnimation(self, animationName):
-            self.animationName = animationName
-            self.image = animations[animationName].frames[0]
-            self.surf = pygame.Surface((self.image.get_width(), self.image.get_height()))
-
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__()
-            self.animationName = animationName
-            self.spawnX = spawnX
-            self.spawnY = spawnY
-            self.movementSpeed = 1 #default movement 1 pixel per movement
-            self.animationTick = 0
-            self.changeAnimation(animationName)
-            self.rect = self.surf.get_rect(topleft=(spawnX, spawnY))
-
-      def setMovementSpeed(self,speed):
-            self.movementSpeed = speed
-
-      def moveRight(self):
-            self.rect.x += self.movementSpeed
-
-      def moveLeft(self):
-            self.rect.x -= self.movementSpeed
-
-      def moveDown(self):
-            self.rect.y += self.movementSpeed
-
-      def moveUp(self):
-            self.rect.y -= self.movementSpeed
-
-      def recenterAt(self,X,Y):
-            self.rect = self.surf.get_rect(center=(spawnX, spawnY))
-
-      def updateImage(self):
-            self.animationTick += 1
-            currentFrame = math.floor(self.animationTick * animations[self.animationName].timeSpeed) % animations[self.animationName].numberOfFrames
-            self.image = animations[self.animationName].frames[currentFrame]
-
-      def draw(self, surf):
-            surf.blit(self.image, self.rect)
-
-      def move(self):
-            self.updateImage()
-
-class MagicalCreature(AnimatedSprite):
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__(animationName,spawnX,spawnY)
-            self.mana = 100
-            self.maxMana = 100
-            self.health = 100
-            self.maxHealth = 100
-            self.meleeDamage = 1
-
-      def refillMana(self, amount):
-            self.mana = min(self.maxMana, self.mana + amount)
-
-      def consumeMana(self, amount):
-            self.refillMana(-amount)
-
-      def heal(self, amount):
-            self.health = min(self.maxHealth, self.health + amount)
-
-      def damage(self, amount):
-            self.heal(-amount)
-
-      def meleeFight(self, opponent):
-            opponent.damage(self.meleeDamage)
-            self.damage(opponent.meleeDamage)
-##hudSprites
-class Displayer(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Port1",spawnX,spawnY)
-
-class Inventory(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("PInvt",spawnX,spawnY)
-
-class Skills(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("PSkill",spawnX,spawnY)
-##MapBuild
-class Wall(AnimatedSprite):
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__(animationName,spawnX,spawnY)
-##Foes
-class Goblin(MagicalCreature):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("GoblinR",spawnX,spawnY)
-
-class Demon(MagicalCreature):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("DemonL",spawnX,spawnY)
-## Interactive
-class FloorSpike(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Spike",spawnX,spawnY)
-
-class FloorSpikeSafer(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("SSafer",spawnX,spawnY)
-
-class Fountain(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Fountain",spawnX,spawnY)
-            self.healBuff = 10
-
-class Chest(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Chest",spawnX,spawnY)
-##Misc
-class HPotion(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("HPOT",spawnX,spawnY)
-
-class MPotion(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("MPOT",spawnX,spawnY)
-
-class Experience(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("ExpP",spawnX,spawnY)
-
-class HitPoints(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Life",spawnX,spawnY)
-
-class ManaPoints(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("ManaP",spawnX,spawnY)
-
-class Player(MagicalCreature):
-      def __init__(self,spawnX,spawnY):
-            super().__init__("Player1",spawnX,spawnY)
-            self.meleeDamage = 2
-
 #Sprites
-E1 = Goblin(160,520)
+E1 = sp.Goblin(160,520)
 gameSprites[0].add(E1)
 enemies[0].add(E1)
 
-E2 = Demon(200,720)
+E2 = sp.Demon(200,720)
 gameSprites[0].add(E2)
 enemies[0].add(E2)
 
-WF = Fountain(800, 800)
+WF = sp.Fountain(800, 800)
 gameSprites[0].add(WF)
 Fountains[0].add(WF)
 
-H1 = HPotion(500, 500)
+H1 = sp.HPotion(500, 500)
 gameSprites[0].add(H1)
 
-M1 = MPotion(500, 700)
+M1 = sp.MPotion(500, 700)
 gameSprites[0].add(M1)
 
-C1 = Chest(200, 300)
+C1 = sp.Chest(200, 300)
 gameSprites[0].add(C1)
 
-FS = FloorSpike(700,600)
+FS = sp.FloorSpike(700,600)
 gameSprites[0].add(FS)
 
-FSS = FloorSpikeSafer(1000,1000)
+FSS = sp.FloorSpikeSafer(1000,1000)
 gameSprites[0].add(FSS)
 
 #Walls
 for k in range(10):
-      WL = Wall("Wall",k*80,0)
+      WL = sp.Wall("Wall",k*80,0)
       gameSprites[0].add(WL)
       Walls[0].add(WL)
 
-WL = Wall("WallCL",0,0)
+WL = sp.Wall("WallCL",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WallCR",0,0)
+WL = sp.Wall("WallCR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WallCLR",0,0)
+WL = sp.Wall("WallCLR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WallLR",0,0)
+WL = sp.Wall("WallLR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallLR",0,0)
+WL = sp.Wall("BWallLR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallR",0,0)
+WL = sp.Wall("BWallR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallL",0,0)
+WL = sp.Wall("BWallL",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 for k in range(8):
-      WL = Wall("BWallFill",k*80+80,-40)
+      WL = sp.Wall("BWallFill",k*80+80,-40)
       gameSprites[0].add(WL)
       Walls[0].add(WL)
 
-WL = Wall("BWallCLTR",0,0)
+WL = sp.Wall("BWallCLTR",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 for k in range(8):
-      WL = Wall("BWallTop",k*80+80,-80)
+      WL = sp.Wall("BWallTop",k*80+80,-80)
       gameSprites[0].add(WL)
       Walls[0].add(WL)
 
-WL = Wall("BWallCRT",0,0)
+WL = sp.Wall("BWallCRT",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallCLT",0,0)
+WL = sp.Wall("BWallCLT",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallCRB",0,0)
+WL = sp.Wall("BWallCRB",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallCLB",0,0)
+WL = sp.Wall("BWallCLB",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("BWallCLRB",0,0)
+WL = sp.Wall("BWallCLRB",0,0)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 ##Finished_Walls
-WL = Wall("WA1",-1300,400)
+WL = sp.Wall("WA1",-1300,400)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA2",-900,-200)
+WL = sp.Wall("WA2",-900,-200)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA3",-900,-400)
+WL = sp.Wall("WA3",-900,-400)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA4",-500,-1200)
+WL = sp.Wall("WA4",-500,-1200)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA5",-500,-900)
+WL = sp.Wall("WA5",-500,-900)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA6",-500,700)
+WL = sp.Wall("WA6",-500,700)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA7",-200,-200)
+WL = sp.Wall("WA7",-200,-200)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA8",-500,-500)
+WL = sp.Wall("WA8",-500,-500)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-WL = Wall("WA9",-1000,-1000)
+WL = sp.Wall("WA9",-1000,-1000)
 gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 ##hudSprites
-PD = Displayer(0, 100)
+PD = sp.Displayer(0, 100)
 hudSprites.add(PD)
 #
-PI = Inventory(1200, 1200)
+PI = sp.Inventory(1200, 1200)
 gameSprites[0].add(PI)
-PS = Skills(-700, -700)
+PS = sp.Skills(-700, -700)
 gameSprites[0].add(PS)
 ##
-XP = Experience(900,760)
+XP = sp.Experience(900,760)
 gameSprites[0].add(XP)
 
-HP = HitPoints(900,800)
+HP = sp.HitPoints(900,800)
 gameSprites[0].add(HP)
 
-MP = ManaPoints(920,820)
+MP = sp.ManaPoints(920,820)
 gameSprites[0].add(MP)
 #Player
-MainCharacter = Player(99,99)
-MainCharacter.setMovementSpeed(15)
+MainCharacter = sp.Player(99,99)
 gameSprites[0].add(MainCharacter)
 allies[0].add(MainCharacter)
 selectedSprites.add(MainCharacter)

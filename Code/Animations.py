@@ -1,6 +1,6 @@
 import pygame
 
-class Animation(object):
+class Animation():
       def __init__(self, imagePath, numberOfFrames, frameX, frameY, timeSpeed):
             loadedImage = pygame.image.load(imagePath)
             self.numberOfFrames = numberOfFrames
@@ -9,8 +9,7 @@ class Animation(object):
             for k in range(numberOfFrames):
                   self.frames.append(loadedImage.subsurface((k * frameX, 0, frameX, frameY)))
 
-def loadAnimations():
-    return {
+animations = {
       #hudSprites
       "Port1": Animation("../Graphics/Images/PlayerDisplay352x137.png",1,352,137,0.4),
       #
