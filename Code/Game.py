@@ -133,7 +133,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.spawnY = spawnY
             self.animationTick = 0
             self.changeAnimation(animationName)
-            self.rect = self.surf.get_rect(center=(spawnX, spawnY))
+            self.rect = self.surf.get_rect(topleft=(spawnX, spawnY))
+
+      def recenterAt(self,X,Y):
+            self.rect = self.surf.get_rect(topleft=(spawnX, spawnY))
 
       def updateImage(self):
             self.animationTick += 1
