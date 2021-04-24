@@ -144,6 +144,10 @@ while isRunning:
       if pressed_keys[pygame.key.key_code("D")]:
             for selected in selectedSprites:
                   selected.moveRight()
+      # Delete selected sprites
+      if pressed_keys[pygame.K_DELETE]:
+            for selected in selectedSprites:
+                  selected.kill()
       # Recenter on center of selectedSprites
       if pressed_keys[pygame.key.key_code(" ")]:
             ssX, ssY = centerOfSelectedSprites()
