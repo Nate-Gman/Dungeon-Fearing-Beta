@@ -15,7 +15,7 @@ r.enemies.add(sp)
 #
 sp = s.Fountain('Fountain', 1420, 379)
 r.gameSprites.add(sp)
-r.Fountains.add(sp)
+r.allyFountains.add(sp)
 #
 sp = s.AnimatedSprite('HPOT', 1444, 725)
 r.gameSprites.add(sp)

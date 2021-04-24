@@ -22,28 +22,18 @@ BlueBorderColor = (3*16, 3*16+14, 5*16+9)
 FloorColor = (117, 85, 85)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-PINK = (255, 120, 120)
-# light shade of the button 
-LIGHT = (170,170,170)
-DARK = (100,100,100) 
 
 # Variables
-SCORE = 10
 cr = ExportedRealm0.r
 calculateWalls = True
 
 # Fonts
-font = pygame.font.SysFont("Fixedsys", 60)
-font_small = pygame.font.SysFont("Fixedsys", 25)
-regularfont = pygame.font.SysFont('Corbel',25) 
-text = font.render('LOAD' , True , LIGHT)
+font = pygame.font.SysFont("Fixedsys", 39)
 
 # screen
 SCREEN_WIDTH, SCREEN_HEIGHT = 1820, 999
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 manager = pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
-DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Dungeon Fearing!")
 
 # Mouse stuff
@@ -60,7 +50,7 @@ selectedSprites = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
 # # hudSprites
-PD = sp.Displayer(0, 100)
+PD = sp.AnimatedSprite("Port1", 0, 100)
 hudSprites.add(PD)
 
 def teleportAllSprites(east, south):
@@ -85,15 +75,23 @@ def centerOfSelectedSprites():
 
 # Game Loop
 isRunning = True
+gameModes = ['Edit','Play','Settings']
+gameMode = 'Edit'
 while isRunning:
       time_delta = FramePerSec.tick(FPS)/1000.0
       DISPLAYSURF.fill(FloorColor)
-      # Moves and Re-draws all Sprites
-      for sprite in cr.gameSprites:
-            sprite.draw(DISPLAYSURF)
-            sprite.move()
-            # Walls push sprites around, thus walls will push walls around
-            if calculateWalls:
+      # Action Keys
+      pressed_keys = pygame.key.get_pressed()
+      mx, my = pygame.mouse.get_pos()
+      if gameMode == 'Edit' or gameMode == 'Play':
+            # Re-draws all gameSprites
+            for sprite in cr.gameSprites:
+                  sprite.draw(DISPLAYSURF)
+      if gameMode == 'Play':
+            # Moves all Sprites
+            for sprite in cr.gameSprites:
+                  sprite.move()
+                  # Walls push sprites around, thus walls will push walls around
                   for wall in cr.Walls:
                         if pygame.sprite.collide_rect(wall, sprite):
                               WX,WY = wall.rect.center
@@ -101,57 +99,61 @@ while isRunning:
                               MoveX=sX-WX
                               MoveY=sY-WY
                               sprite.rect.move_ip(MoveX, MoveY)
-
-      # Fountain
-      for ally in cr.allies:
-            for Fountain in cr.Fountains:
-                  if pygame.sprite.collide_rect(ally, Fountain):
-                        ally.heal(Fountain.healBuff)
-      # Fighting
-      for ally in cr.allies:
+            # Fountain
+            for ally in cr.allies:
+                  for Fountain in cr.allyFountains:
+                        if pygame.sprite.collide_rect(ally, Fountain):
+                              ally.heal(Fountain.healBuff)
             for enemy in cr.enemies:
-                  if pygame.sprite.collide_rect(ally, enemy):
-                        ally.meleeFight(enemy)
-      # Check deaths
-      for ally in cr.allies.copy():
-            if ally.health <= 0:
-                  ally.kill()
-      for enemy in cr.enemies.copy():
-            if enemy.health <= 0:
-                  enemy.kill()
- 
-      # Action Keys
-      pressed_keys = pygame.key.get_pressed()
-      # Quit game
-      if pressed_keys[pygame.key.key_code("Q")]:
-            isRunning = False
-      # Export current realm
-      if pressed_keys[pygame.K_e]:
-            cr.export()
-      # Toggle wall code
-      if pressed_keys[pygame.K_z]:
-            calculateWalls = not calculateWalls
-      # WASD movement of selected sprites
-      if pressed_keys[pygame.key.key_code("W")]:
+                  for Fountain in cr.enemyFountains:
+                        if pygame.sprite.collide_rect(enemy, Fountain):
+                              enemy.heal(Fountain.healBuff)
+            # Fighting
+            for ally in cr.allies:
+                  for enemy in cr.enemies:
+                        if pygame.sprite.collide_rect(ally, enemy):
+                              ally.meleeFight(enemy)
+            # Check deaths
+            for ally in cr.allies.copy():
+                  if ally.health <= 0:
+                        ally.kill()
+            for enemy in cr.enemies.copy():
+                  if enemy.health <= 0:
+                        enemy.kill()
+            # Heads Up Display
+            for sprite in hudSprites:
+                  sprite.draw(DISPLAYSURF)
+
+      if gameMode == 'Edit':
+            # Export current realm
+            if pressed_keys[pygame.K_e]:
+                  cr.export()
+            # WASD movement of selected sprites
+            if pressed_keys[pygame.K_w]:
+                  for selected in selectedSprites:
+                        selected.moveUp()
+            if pressed_keys[pygame.K_a]:
+                  for selected in selectedSprites:
+                        selected.moveLeft()
+            if pressed_keys[pygame.K_s]:
+                  for selected in selectedSprites:
+                        selected.moveDown()
+            if pressed_keys[pygame.K_d]:
+                  for selected in selectedSprites:
+                        selected.moveRight()
+            # Delete selected sprites
+            if pressed_keys[pygame.K_DELETE]:
+                  for selected in selectedSprites:
+                        selected.kill()
+            # Recenter on center of selectedSprites
+            if pressed_keys[pygame.K_SPACE]:
+                  ssX, ssY = centerOfSelectedSprites()
+                  recenterAt(ssX, ssY)
+            # Draw border rectangles
+            if showSelectRect:
+                  pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
             for selected in selectedSprites:
-                  selected.moveUp()
-      if pressed_keys[pygame.key.key_code("A")]:
-            for selected in selectedSprites:
-                  selected.moveLeft()
-      if pressed_keys[pygame.key.key_code("S")]:
-            for selected in selectedSprites:
-                  selected.moveDown()
-      if pressed_keys[pygame.key.key_code("D")]:
-            for selected in selectedSprites:
-                  selected.moveRight()
-      # Delete selected sprites
-      if pressed_keys[pygame.K_DELETE]:
-            for selected in selectedSprites:
-                  selected.kill()
-      # Recenter on center of selectedSprites
-      if pressed_keys[pygame.key.key_code(" ")]:
-            ssX, ssY = centerOfSelectedSprites()
-            recenterAt(ssX, ssY)
+                  pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
 
       # Cycles through all events occuring
       for event in pygame.event.get():
@@ -159,7 +161,6 @@ while isRunning:
             if event.type == pygame.QUIT:
                   isRunning = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                  mx, my = pygame.mouse.get_pos()
                   if event.button == 1: # Left mouse button was pressed
                         if leftClickMode == "TeleportSelectedSprites":
                               ssX, ssY = centerOfSelectedSprites()
@@ -199,16 +200,8 @@ while isRunning:
                                           else:
                                                 selectedSprites.add(sprite)
 
-      # Draw border rectangles
-      if showSelectRect:
-            pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
-      for selected in selectedSprites:
-            pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
-      # Heads Up Display
-      for sprite in hudSprites:
-            sprite.draw(DISPLAYSURF)
-      scores = font.render(str(SCORE), True, BLACK)
-      DISPLAYSURF.blit(scores, (20, 20))
+      text = font.render("Mode: " + gameMode, True, BLACK)
+      DISPLAYSURF.blit(text, (20, 20))
 
       # Update display
       manager.update(time_delta)
