@@ -45,14 +45,18 @@ class AnimatedSprite(pygame.sprite.Sprite):
       def move(self):
             self.updateImage()
 
+DefaultMaxMana = 100
+DefaultMaxHealth = 100
+DefaultMeleeDamage = 1
+
 class MagicalCreature(AnimatedSprite):
       def __init__(self, animationName, spawnX, spawnY):
             super().__init__(animationName,spawnX,spawnY)
-            self.mana = 100
-            self.maxMana = 100
-            self.health = 100
-            self.maxHealth = 100
-            self.meleeDamage = 1
+            self.mana = DefaultMaxMana
+            self.maxMana = DefaultMaxMana
+            self.health = DefaultMaxHealth
+            self.maxHealth = DefaultMaxHealth
+            self.meleeDamage = DefaultMeleeDamage
 
       def refillMana(self, amount):
             self.mana = min(self.maxMana, self.mana + amount)
@@ -102,10 +106,11 @@ class FloorSpikeSafer(AnimatedSprite):
       def __init__(self, spawnX, spawnY):
             super().__init__("SSafer",spawnX,spawnY)
 
+DefaultHealBuff = 10
 class Fountain(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Fountain",spawnX,spawnY)
-            self.healBuff = 10
+      def __init__(self, animationName, spawnX, spawnY):
+            super().__init__(animationName,spawnX,spawnY)
+            self.healBuff = DefaultHealBuff
 
 class Chest(AnimatedSprite):
       def __init__(self, spawnX, spawnY):

@@ -7,7 +7,7 @@
 #Imports
 import pygame, sys, math, random, time
 import Animations, Sprites as sp, Realms as r
-import Realm0
+import ExportedRealm0
 
 #Initialzing
 pygame.init()
@@ -29,7 +29,8 @@ DARK = (100,100,100)
 
 #Variables
 SCORE = 10
-cr = Realm0.r
+cr = ExportedRealm0.r
+calculateWalls = True
 
 #Fonts
 font = pygame.font.SysFont("Fixedsys", 60)
@@ -88,13 +89,14 @@ while True:
             sprite.draw(DISPLAYSURF)
             sprite.move()
             #Walls push sprites around, thus walls will push walls around
-            for wall in cr.Walls:
-                  if pygame.sprite.collide_rect(wall, sprite):
-                        WX,WY = wall.rect.center
-                        sX,sY = sprite.rect.center
-                        MoveX=sX-WX
-                        MoveY=sY-WY
-                        sprite.rect.move_ip(MoveX, MoveY)
+            if calculateWalls:
+                  for wall in cr.Walls:
+                        if pygame.sprite.collide_rect(wall, sprite):
+                              WX,WY = wall.rect.center
+                              sX,sY = sprite.rect.center
+                              MoveX=sX-WX
+                              MoveY=sY-WY
+                              sprite.rect.move_ip(MoveX, MoveY)
 
       #Fountain
       for ally in cr.allies:
@@ -120,6 +122,12 @@ while True:
       if pressed_keys[pygame.key.key_code("Q")]:
             pygame.quit()
             sys.exit()
+      #Export current realm
+      if pressed_keys[pygame.K_e]:
+            cr.export()
+      #Toggle wall code
+      if pressed_keys[pygame.K_z]:
+            calculateWalls = not calculateWalls
       #WASD movement of selected sprites
       if pressed_keys[pygame.key.key_code("W")]:
             for selected in selectedSprites:
