@@ -1,2 +1,13 @@
 # Dungeon-Fearing-Beta
-Dungeon Game
+RPG, Dungeon Game
+Skills
+Animations
+Health
+Mana
+EXP
+Items
+Enemys
+
+# To do
+Screen Display Scroll Scale
+Stuff
