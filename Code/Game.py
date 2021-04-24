@@ -5,8 +5,8 @@
 #Lead Programmer - MarkAndrewGerads.Nazgand@Gmail.Com
 
 #Imports
-import pygame, sys, math
-import random, time
+import pygame, sys, math, random, time
+import Animations
 
 #Initialzing
 pygame.init()
