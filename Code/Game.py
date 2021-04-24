@@ -16,7 +16,7 @@ FPS = 22
 FramePerSec = pygame.time.Clock()
 
 #colors
-BLUE = (0, 255, 0)
+BlueBorderColor = (3*16, 3*16+14, 5*16+9)
 FloorColor = (117, 85, 85)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
@@ -35,27 +35,36 @@ font_small = pygame.font.SysFont("Fixedsys", 25)
 regularfont = pygame.font.SysFont('Corbel',25) 
 text = font.render('LOAD' , True , LIGHT)
 
-
 #screen
 SCREEN_WIDTH, SCREEN_HEIGHT = 1820, 999
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Dungeon Fearing!")
 
+#Mouse stuff
+mouseModes = ["TeleportSelectedSprites","CenterAtMouse","SelectSprites"]
+leftClickMode = "TeleportSelectedSprites"
+middleClickMode = "CenterAtMouse"
+rightClickMode = "SelectSprites"
+selectRect = pygame.Rect(0,0,0,0)
+showSelectRect = False
+
 #Sprites Groups
 Realm = 0
 numberOfRealms = 5
 
-HUD = pygame.sprite.Group()
+hudSprites = pygame.sprite.Group()
+selectedSprites = pygame.sprite.Group()
+clickable = pygame.sprite.Group()
 
-all_sprites = []
+gameSprites = []
 Walls = []
 Fountains = []
 enemies = []
 allies = []
 
 for k in range(numberOfRealms):
-      all_sprites.append(pygame.sprite.Group())
+      gameSprites.append(pygame.sprite.Group())
       Walls.append(pygame.sprite.Group())
       Fountains.append(pygame.sprite.Group())
       enemies.append(pygame.sprite.Group())
@@ -71,7 +80,7 @@ class Animation(object):
                   self.frames.append(loadedImage.subsurface((k * frameX, 0, frameX, frameY)))
 
 animations = {
-      #HUD
+      #hudSprites
       "Port1": Animation("../Graphics/Images/PlayerDisplay352x137.png",1,352,137,0.4),
       #
       "PInvt": Animation("../Graphics/Images/InventorySheet384x384.png",1,384,384,0.4),
@@ -133,9 +142,25 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.animationName = animationName
             self.spawnX = spawnX
             self.spawnY = spawnY
+            self.movementSpeed = 1 #default movement 1 pixel per movement
             self.animationTick = 0
             self.changeAnimation(animationName)
             self.rect = self.surf.get_rect(topleft=(spawnX, spawnY))
+
+      def setMovementSpeed(self,speed):
+            self.movementSpeed = speed
+
+      def moveRight(self):
+            self.rect.x += self.movementSpeed
+
+      def moveLeft(self):
+            self.rect.x -= self.movementSpeed
+
+      def moveDown(self):
+            self.rect.y += self.movementSpeed
+
+      def moveUp(self):
+            self.rect.y -= self.movementSpeed
 
       def recenterAt(self,X,Y):
             self.rect = self.surf.get_rect(center=(spawnX, spawnY))
@@ -176,7 +201,7 @@ class MagicalCreature(AnimatedSprite):
       def meleeFight(self, opponent):
             opponent.damage(self.meleeDamage)
             self.damage(opponent.meleeDamage)
-##HUD
+##hudSprites
 class Displayer(AnimatedSprite):
       def __init__(self, spawnX, spawnY):
             super().__init__("Port1",spawnX,spawnY)
@@ -243,184 +268,167 @@ class Player(MagicalCreature):
             super().__init__("Player1",spawnX,spawnY)
             self.meleeDamage = 2
 
-      def move(self):
-            self.updateImage()
-            pressed_keys = pygame.key.get_pressed()
-            if pressed_keys[pygame.key.key_code("W")]:
-                  self.rect.move_ip(0, -10)
-            if pressed_keys[pygame.key.key_code("S")]:
-                  self.rect.move_ip(0, 10)
-            if pressed_keys[pygame.key.key_code("A")]:
-                  self.rect.move_ip(-10, 0)
-            if pressed_keys[pygame.key.key_code("D")]:
-                  self.rect.move_ip(10, 0)
-            edgeTouch=(self.rect.left<0) or (self.rect.top<0) or (self.rect.right>SCREEN_WIDTH) or (self.rect.bottom>SCREEN_HEIGHT)
-            if edgeTouch or pressed_keys[pygame.key.key_code(" ")]:
-                  teleportX = SCREEN_WIDTH//2-self.rect.left
-                  teleportY = SCREEN_HEIGHT//2-self.rect.top
-                  for sprite in all_sprites[Realm]:
-                        sprite.rect.left += teleportX
-                        sprite.rect.top += teleportY
-
 #Sprites
 E1 = Goblin(160,520)
-all_sprites[0].add(E1)
+gameSprites[0].add(E1)
 enemies[0].add(E1)
 
 E2 = Demon(200,720)
-all_sprites[0].add(E2)
+gameSprites[0].add(E2)
 enemies[0].add(E2)
 
 WF = Fountain(800, 800)
-all_sprites[0].add(WF)
+gameSprites[0].add(WF)
 Fountains[0].add(WF)
 
 H1 = HPotion(500, 500)
-all_sprites[0].add(H1)
+gameSprites[0].add(H1)
 
 M1 = MPotion(500, 700)
-all_sprites[0].add(M1)
+gameSprites[0].add(M1)
 
 C1 = Chest(200, 300)
-all_sprites[0].add(C1)
+gameSprites[0].add(C1)
 
 FS = FloorSpike(700,600)
-all_sprites[0].add(FS)
+gameSprites[0].add(FS)
 
 FSS = FloorSpikeSafer(1000,1000)
-all_sprites[0].add(FSS)
+gameSprites[0].add(FSS)
 
 #Walls
 for k in range(10):
       WL = Wall("Wall",k*80,0)
-      all_sprites[0].add(WL)
+      gameSprites[0].add(WL)
       Walls[0].add(WL)
 
 WL = Wall("WallCL",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WallCR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WallCLR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WallLR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallLR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallL",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 for k in range(8):
       WL = Wall("BWallFill",k*80+80,-40)
-      all_sprites[0].add(WL)
+      gameSprites[0].add(WL)
       Walls[0].add(WL)
 
 WL = Wall("BWallCLTR",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 for k in range(8):
       WL = Wall("BWallTop",k*80+80,-80)
-      all_sprites[0].add(WL)
+      gameSprites[0].add(WL)
       Walls[0].add(WL)
 
 WL = Wall("BWallCRT",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallCLT",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallCRB",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallCLB",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("BWallCLRB",0,0)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 ##Finished_Walls
 WL = Wall("WA1",-1300,400)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA2",-900,-200)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA3",-900,-400)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA4",-500,-1200)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA5",-500,-900)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA6",-500,700)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA7",-200,-200)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA8",-500,-500)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
 WL = Wall("WA9",-1000,-1000)
-all_sprites[0].add(WL)
+gameSprites[0].add(WL)
 Walls[0].add(WL)
 
-##HUD
+##hudSprites
 PD = Displayer(0, 100)
-HUD.add(PD)
+hudSprites.add(PD)
 #
 PI = Inventory(1200, 1200)
-all_sprites[0].add(PI)
+gameSprites[0].add(PI)
 PS = Skills(-700, -700)
-all_sprites[0].add(PS)
+gameSprites[0].add(PS)
 ##
 XP = Experience(900,760)
-all_sprites[0].add(XP)
+gameSprites[0].add(XP)
 
 HP = HitPoints(900,800)
-all_sprites[0].add(HP)
+gameSprites[0].add(HP)
 
 MP = ManaPoints(920,820)
-all_sprites[0].add(MP)
+gameSprites[0].add(MP)
 #Player
 MainCharacter = Player(99,99)
-all_sprites[0].add(MainCharacter)
+MainCharacter.setMovementSpeed(15)
+gameSprites[0].add(MainCharacter)
 allies[0].add(MainCharacter)
+selectedSprites.add(MainCharacter)
 
 #Game Loop
 while True:
       DISPLAYSURF.fill(FloorColor)
       #Moves and Re-draws all Sprites
-      for sprite in all_sprites[Realm]:
+      for sprite in gameSprites[Realm]:
             sprite.draw()
             sprite.move()
             #Walls push sprites around, thus walls will push walls around
@@ -449,19 +457,89 @@ while True:
       for enemy in enemies[Realm].copy():
             if enemy.health <= 0:
                   enemy.kill()
+ 
+      #Action Keys
+      pressed_keys = pygame.key.get_pressed()
+      #Quit game
+      if pressed_keys[pygame.key.key_code("Q")]:
+            pygame.quit()
+            sys.exit()
+      #WASD movement of selected sprites
+      if pressed_keys[pygame.key.key_code("W")]:
+            for selected in selectedSprites:
+                  selected.moveUp()
+      if pressed_keys[pygame.key.key_code("A")]:
+            for selected in selectedSprites:
+                  selected.moveLeft()
+      if pressed_keys[pygame.key.key_code("S")]:
+            for selected in selectedSprites:
+                  selected.moveDown()
+      if pressed_keys[pygame.key.key_code("D")]:
+            for selected in selectedSprites:
+                  selected.moveRight()
+      #Recenter on MainCharacter
+      if pressed_keys[pygame.key.key_code(" ")]:
+            teleportX = SCREEN_WIDTH//2-MainCharacter.rect.centerx
+            teleportY = SCREEN_HEIGHT//2-MainCharacter.rect.centery
+            for sprite in gameSprites[Realm]:
+                  sprite.rect.left += teleportX
+                  sprite.rect.top += teleportY
+
       #Cycles through all events occuring
       for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                   mx, my = pygame.mouse.get_pos()
-                  MainCharacter.rect.left=mx
-                  MainCharacter.rect.top=my
-      #Action Keys
-      pressed_keys = pygame.key.get_pressed()
-      if pressed_keys[pygame.key.key_code("Q")]:
-            pygame.quit()
-            sys.exit()
+                  if event.button == 1: #Left mouse button was pressed
+                        if leftClickMode == "TeleportSelectedSprites" and selectedSprites.__len__() > 0:
+                              minLeft = min((o.rect.left for o in selectedSprites))
+                              minTop = min((o.rect.top for o in selectedSprites))
+                              teleportX = mx - minLeft
+                              teleportY = my - minTop
+                              for sprite in selectedSprites:
+                                    sprite.rect.left += teleportX
+                                    sprite.rect.top += teleportY
+                  if event.button == 2: #Middle mouse button was pressed
+                        if middleClickMode=="CenterAtMouse":
+                              teleportX = SCREEN_WIDTH//2-mx
+                              teleportY = SCREEN_HEIGHT//2-my
+                              for sprite in gameSprites[Realm]:
+                                    sprite.rect.left += teleportX
+                                    sprite.rect.top += teleportY
+                  if event.button == 3: #Right mouse button was pressed
+                        if rightClickMode=="SelectSprites":
+                              showSelectRect=True
+                              selectRect.topleft = mx, my
+                              selectRect.width, selectRect.height = 0, 0
+            if event.type == pygame.MOUSEMOTION:
+                  if showSelectRect: #Update selectRect
+                        mx, my = pygame.mouse.get_pos()
+                        selectRect.width = mx - selectRect.left
+                        selectRect.height = my - selectRect.top
+            if event.type == pygame.MOUSEBUTTONUP:
+                  mx, my = pygame.mouse.get_pos()
+                  if event.button == 3: #Right mouse button was released
+                        if rightClickMode == "SelectSprites":
+                              showSelectRect = False
+                              newSelectedSprites = pygame.sprite.Group()
+                              for sprite in gameSprites[Realm]:
+                                    if selectRect.colliderect(sprite.rect):
+                                          newSelectedSprites.add(sprite)
+                              if not pressed_keys[pygame.K_LCTRL]:
+                                    selectedSprites = newSelectedSprites
+                              else:
+                                    for sprite in newSelectedSprites:
+                                          if selectedSprites.has(sprite):
+                                                selectedSprites.remove(sprite)
+                                          else:
+                                                selectedSprites.add(sprite)
+
+      #Draw border rectangles
+      if showSelectRect:
+            pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
+      for selected in selectedSprites:
+            pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
       #Heads Up Display
-      for sprite in HUD:
+      for sprite in hudSprites:
             sprite.draw()
       scores = font.render(str(SCORE), True, BLACK)
       DISPLAYSURF.blit(scores, (20, 20))
