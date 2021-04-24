@@ -7,6 +7,7 @@
 #Imports
 import pygame, sys, math, random, time
 import Animations, Sprites as sp, Realms as r
+import Realm0
 
 #Initialzing
 pygame.init()
@@ -28,6 +29,7 @@ DARK = (100,100,100)
 
 #Variables
 SCORE = 10
+cr = Realm0.r
 
 #Fonts
 font = pygame.font.SysFont("Fixedsys", 60)
@@ -53,160 +55,6 @@ showSelectRect = False
 hudSprites = pygame.sprite.Group()
 selectedSprites = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
-
-#Sprites
-cr = r.Realm()
-
-E1 = sp.Goblin(160,520)
-cr.gameSprites.add(E1)
-cr.enemies.add(E1)
-
-E2 = sp.Demon(200,720)
-cr.gameSprites.add(E2)
-cr.enemies.add(E2)
-
-WF = sp.Fountain(800, 800)
-cr.gameSprites.add(WF)
-cr.Fountains.add(WF)
-
-H1 = sp.HPotion(500, 500)
-cr.gameSprites.add(H1)
-
-M1 = sp.MPotion(500, 700)
-cr.gameSprites.add(M1)
-
-C1 = sp.Chest(200, 300)
-cr.gameSprites.add(C1)
-
-FS = sp.FloorSpike(700,600)
-cr.gameSprites.add(FS)
-
-FSS = sp.FloorSpikeSafer(1000,1000)
-cr.gameSprites.add(FSS)
-
-#Walls
-for k in range(10):
-      WL = sp.Wall("Wall",k*80,0)
-      cr.gameSprites.add(WL)
-      cr.Walls.add(WL)
-
-WL = sp.Wall("WallCL",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WallCR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WallCLR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WallLR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallLR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallL",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-for k in range(8):
-      WL = sp.Wall("BWallFill",k*80+80,-40)
-      cr.gameSprites.add(WL)
-      cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCLTR",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-for k in range(8):
-      WL = sp.Wall("BWallTop",k*80+80,-80)
-      cr.gameSprites.add(WL)
-      cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCRT",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCLT",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCRB",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCLB",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("BWallCLRB",0,0)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-##Finished_Walls
-WL = sp.Wall("WA1",-1300,400)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA2",-900,-200)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA3",-900,-400)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA4",-500,-1200)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA5",-500,-900)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA6",-500,700)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA7",-200,-200)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA8",-500,-500)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-WL = sp.Wall("WA9",-1000,-1000)
-cr.gameSprites.add(WL)
-cr.Walls.add(WL)
-
-#
-PI = sp.Inventory(1200, 1200)
-cr.gameSprites.add(PI)
-PS = sp.Skills(-700, -700)
-cr.gameSprites.add(PS)
-##
-XP = sp.Experience(900,760)
-cr.gameSprites.add(XP)
-
-HP = sp.HitPoints(900,800)
-cr.gameSprites.add(HP)
-
-MP = sp.ManaPoints(920,820)
-cr.gameSprites.add(MP)
-#Player
-MainCharacter = sp.Player(99,99)
-cr.gameSprites.add(MainCharacter)
-cr.allies.add(MainCharacter)
-selectedSprites.add(MainCharacter)
 
 ##hudSprites
 PD = sp.Displayer(0, 100)
