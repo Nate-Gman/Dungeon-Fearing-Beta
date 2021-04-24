@@ -1,11 +1,12 @@
-#Version 6 Beta
+#Version 7 Beta
 #
 #Credits
 #Lead Designer - Nathan Gerads
 #Lead Programmer - MarkAndrewGerads.Nazgand@Gmail.Com
 
 #Imports
-import pygame, sys, math, random, time
+import sys, math, random, time
+import pygame, pygame_gui
 import Animations, Sprites as sp, Realms as r
 import ExportedRealm0
 
@@ -41,6 +42,7 @@ text = font.render('LOAD' , True , LIGHT)
 #screen
 SCREEN_WIDTH, SCREEN_HEIGHT = 1820, 999
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+manager = pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Dungeon Fearing!")
 
@@ -82,7 +84,8 @@ def centerOfSelectedSprites():
             return SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
 
 #Game Loop
-while True:
+isRunning = True
+while isRunning:
       DISPLAYSURF.fill(FloorColor)
       #Moves and Re-draws all Sprites
       for sprite in cr.gameSprites:
@@ -120,8 +123,7 @@ while True:
       pressed_keys = pygame.key.get_pressed()
       #Quit game
       if pressed_keys[pygame.key.key_code("Q")]:
-            pygame.quit()
-            sys.exit()
+            isRunning = False
       #Export current realm
       if pressed_keys[pygame.K_e]:
             cr.export()
@@ -148,6 +150,8 @@ while True:
 
       #Cycles through all events occuring
       for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                  isRunning = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                   mx, my = pygame.mouse.get_pos()
                   if event.button == 1: #Left mouse button was pressed
