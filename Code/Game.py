@@ -17,7 +17,7 @@ FramePerSec = pygame.time.Clock()
 
 #colors
 BLUE = (0, 255, 0)
-FLOOR = (117, 85, 85)
+FloorColor = (117, 85, 85)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -45,6 +45,8 @@ pygame.display.set_caption("Dungeon Fearing!")
 #Sprites Groups
 Realm = 0
 numberOfRealms = 5
+
+HUD = pygame.sprite.Group()
 
 all_sprites = []
 Walls = []
@@ -142,6 +144,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.animationTick += 1
             currentFrame = math.floor(self.animationTick * animations[self.animationName].timeSpeed) % animations[self.animationName].numberOfFrames
             self.image = animations[self.animationName].frames[currentFrame]
+
+      def draw(self):
+            global DISPLAYSURF
+            DISPLAYSURF.blit(self.image, self.rect)
 
       def move(self):
             self.updateImage()
@@ -389,8 +395,8 @@ all_sprites[0].add(WL)
 Walls[0].add(WL)
 
 ##HUD
-PD = Displayer(-1200, 1200)
-all_sprites[0].add(PD)
+PD = Displayer(0, 100)
+HUD.add(PD)
 #
 PI = Inventory(1200, 1200)
 all_sprites[0].add(PI)
@@ -412,9 +418,10 @@ allies[0].add(MainCharacter)
 
 #Game Loop
 while True:
-      DISPLAYSURF.fill(FLOOR)
+      DISPLAYSURF.fill(FloorColor)
+      #Moves and Re-draws all Sprites
       for sprite in all_sprites[Realm]:
-            DISPLAYSURF.blit(sprite.image, sprite.rect)
+            sprite.draw()
             sprite.move()
             #Walls push sprites around, thus walls will push walls around
             for wall in Walls[Realm]:
@@ -450,14 +457,15 @@ while True:
                   MainCharacter.rect.top=my
       #Action Keys
       pressed_keys = pygame.key.get_pressed()
-      if pressed_keys[pygame.key.key_code("E")]:
-            DISPLAYSURF.blit("PInvt")
       if pressed_keys[pygame.key.key_code("Q")]:
             pygame.quit()
             sys.exit()
+      #Heads Up Display
+      for sprite in HUD:
+            sprite.draw()
       scores = font.render(str(SCORE), True, BLACK)
       DISPLAYSURF.blit(scores, (20, 20))
 
-      #Moves and Re-draws all Sprites
+      #Update display
       pygame.display.update()
       FramePerSec.tick(FPS)
