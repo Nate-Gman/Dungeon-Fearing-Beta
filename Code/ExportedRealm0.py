@@ -83,6 +83,11 @@ r.gameSprites.add(sp)
 sp = s.AnimatedSprite('ManaP', 1328, 645)
 r.gameSprites.add(sp)
 #
+sp = s.MagicalCreature('Player1', 1003, 405)
+sp.meleeDamage = 2
+r.gameSprites.add(sp)
+r.allies.add(sp)
+#
 sp = s.MagicalCreature('Player1', 867, 590)
 sp.meleeDamage = 2
 r.gameSprites.add(sp)

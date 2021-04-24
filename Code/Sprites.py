@@ -45,6 +45,9 @@ class AnimatedSprite(pygame.sprite.Sprite):
       def move(self):
             return True
 
+      def copy(self):
+            return AnimatedSprite(self.animationName, self.rect.left, self.rect.top)
+
 DefaultMaxMana = 100
 DefaultMaxHealth = 100
 DefaultMeleeDamage = 1
@@ -73,6 +76,16 @@ class MagicalCreature(AnimatedSprite):
       def meleeFight(self, opponent):
             opponent.damage(self.meleeDamage)
             self.damage(opponent.meleeDamage)
+
+      def copy(self):
+            mc = MagicalCreature(self.animationName, self.rect.left, self.rect.top)
+            mc.mana = self.mana
+            mc.maxMana = self.maxMana
+            mc.health = self.health
+            mc.maxHealth = self.maxHealth
+            mc.meleeDamage = self.meleeDamage
+            return mc
+
 ##hudSprites
 class Displayer(AnimatedSprite):
       def __init__(self, spawnX, spawnY):

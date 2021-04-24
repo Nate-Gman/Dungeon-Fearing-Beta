@@ -141,6 +141,14 @@ while isRunning:
             if pressed_keys[pygame.K_d]:
                   for selected in selectedSprites:
                         selected.moveRight()
+            # Copy selectedSprites
+            if pressed_keys[pygame.K_c]:
+                  for selected in selectedSprites:
+                        copiedSprite = selected.copy()
+                        for group in selected.groups():
+                              if group != selectedSprites:
+                                    group.add(copiedSprite)
+                  pygame.time.wait(500) # Wait a bit so multiple copies are not made
             # Delete selected sprites
             if pressed_keys[pygame.K_DELETE]:
                   for selected in selectedSprites:
