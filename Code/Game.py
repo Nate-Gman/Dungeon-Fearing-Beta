@@ -1,52 +1,52 @@
-#Version 7 Beta
-#
-#Credits
-#Lead Designer - Nathan Gerads
-#Lead Programmer - MarkAndrewGerads.Nazgand@Gmail.Com
+# Version 7 Beta
+# 
+# Credits
+# Lead Designer - Nathan Gerads
+# Lead Programmer - MarkAndrewGerads.Nazgand@Gmail.Com
 
-#Imports
+# Imports
 import sys, math, random, time
 import pygame, pygame_gui
 import Animations, Sprites as sp, Realms as r
 import ExportedRealm0
 
-#Initialzing
+# Initialzing
 pygame.init()
 
-#Setting up FPS
+# Setting up FPS
 FPS = 22
 FramePerSec = pygame.time.Clock()
 
-#colors
+# colors
 BlueBorderColor = (3*16, 3*16+14, 5*16+9)
 FloorColor = (117, 85, 85)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 PINK = (255, 120, 120)
-#light shade of the button 
+# light shade of the button 
 LIGHT = (170,170,170)
 DARK = (100,100,100) 
 
-#Variables
+# Variables
 SCORE = 10
 cr = ExportedRealm0.r
 calculateWalls = True
 
-#Fonts
+# Fonts
 font = pygame.font.SysFont("Fixedsys", 60)
 font_small = pygame.font.SysFont("Fixedsys", 25)
 regularfont = pygame.font.SysFont('Corbel',25) 
 text = font.render('LOAD' , True , LIGHT)
 
-#screen
+# screen
 SCREEN_WIDTH, SCREEN_HEIGHT = 1820, 999
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 manager = pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Dungeon Fearing!")
 
-#Mouse stuff
+# Mouse stuff
 mouseModes = ["TeleportSelectedSprites", "CenterAtMouse", "SelectSprites"]
 leftClickMode = "TeleportSelectedSprites"
 middleClickMode = "CenterAtMouse"
@@ -54,17 +54,17 @@ rightClickMode = "SelectSprites"
 selectRect = pygame.Rect(0,0,0,0)
 showSelectRect = False
 
-#Sprites Groups
+# Sprites Groups
 hudSprites = pygame.sprite.Group()
 selectedSprites = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
-##hudSprites
+# # hudSprites
 PD = sp.Displayer(0, 100)
 hudSprites.add(PD)
 
 def teleportAllSprites(east, south):
-      if east == 0 and south == 0: #Sometimes save computation
+      if east == 0 and south == 0: # Sometimes save computation
             return
       for sprite in cr.gameSprites:
             sprite.rect.left += east
@@ -83,15 +83,16 @@ def centerOfSelectedSprites():
       else:
             return SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
 
-#Game Loop
+# Game Loop
 isRunning = True
 while isRunning:
+      time_delta = FramePerSec.tick(FPS)/1000.0
       DISPLAYSURF.fill(FloorColor)
-      #Moves and Re-draws all Sprites
+      # Moves and Re-draws all Sprites
       for sprite in cr.gameSprites:
             sprite.draw(DISPLAYSURF)
             sprite.move()
-            #Walls push sprites around, thus walls will push walls around
+            # Walls push sprites around, thus walls will push walls around
             if calculateWalls:
                   for wall in cr.Walls:
                         if pygame.sprite.collide_rect(wall, sprite):
@@ -101,17 +102,17 @@ while isRunning:
                               MoveY=sY-WY
                               sprite.rect.move_ip(MoveX, MoveY)
 
-      #Fountain
+      # Fountain
       for ally in cr.allies:
             for Fountain in cr.Fountains:
                   if pygame.sprite.collide_rect(ally, Fountain):
                         ally.heal(Fountain.healBuff)
-      #Fighting
+      # Fighting
       for ally in cr.allies:
             for enemy in cr.enemies:
                   if pygame.sprite.collide_rect(ally, enemy):
                         ally.meleeFight(enemy)
-      #Check deaths
+      # Check deaths
       for ally in cr.allies.copy():
             if ally.health <= 0:
                   ally.kill()
@@ -119,18 +120,18 @@ while isRunning:
             if enemy.health <= 0:
                   enemy.kill()
  
-      #Action Keys
+      # Action Keys
       pressed_keys = pygame.key.get_pressed()
-      #Quit game
+      # Quit game
       if pressed_keys[pygame.key.key_code("Q")]:
             isRunning = False
-      #Export current realm
+      # Export current realm
       if pressed_keys[pygame.K_e]:
             cr.export()
-      #Toggle wall code
+      # Toggle wall code
       if pressed_keys[pygame.K_z]:
             calculateWalls = not calculateWalls
-      #WASD movement of selected sprites
+      # WASD movement of selected sprites
       if pressed_keys[pygame.key.key_code("W")]:
             for selected in selectedSprites:
                   selected.moveUp()
@@ -143,18 +144,19 @@ while isRunning:
       if pressed_keys[pygame.key.key_code("D")]:
             for selected in selectedSprites:
                   selected.moveRight()
-      #Recenter on center of selectedSprites
+      # Recenter on center of selectedSprites
       if pressed_keys[pygame.key.key_code(" ")]:
             ssX, ssY = centerOfSelectedSprites()
             recenterAt(ssX, ssY)
 
-      #Cycles through all events occuring
+      # Cycles through all events occuring
       for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
                   isRunning = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                   mx, my = pygame.mouse.get_pos()
-                  if event.button == 1: #Left mouse button was pressed
+                  if event.button == 1: # Left mouse button was pressed
                         if leftClickMode == "TeleportSelectedSprites":
                               ssX, ssY = centerOfSelectedSprites()
                               teleportX = mx - ssX
@@ -162,22 +164,22 @@ while isRunning:
                               for sprite in selectedSprites:
                                     sprite.rect.left += teleportX
                                     sprite.rect.top += teleportY
-                  if event.button == 2: #Middle mouse button was pressed
+                  if event.button == 2: # Middle mouse button was pressed
                         if middleClickMode=="CenterAtMouse":
                               recenterAt(mx, my)
-                  if event.button == 3: #Right mouse button was pressed
+                  if event.button == 3: # Right mouse button was pressed
                         if rightClickMode=="SelectSprites":
                               showSelectRect=True
                               selectRect.topleft = mx, my
                               selectRect.width, selectRect.height = 1, 1
             if event.type == pygame.MOUSEMOTION:
-                  if showSelectRect: #Update selectRect
+                  if showSelectRect: # Update selectRect
                         mx, my = pygame.mouse.get_pos()
                         selectRect.width = mx - selectRect.left
                         selectRect.height = my - selectRect.top
             if event.type == pygame.MOUSEBUTTONUP:
                   mx, my = pygame.mouse.get_pos()
-                  if event.button == 3: #Right mouse button was released
+                  if event.button == 3: # Right mouse button was released
                         if rightClickMode == "SelectSprites":
                               showSelectRect = False
                               newSelectedSprites = pygame.sprite.Group()
@@ -193,17 +195,18 @@ while isRunning:
                                           else:
                                                 selectedSprites.add(sprite)
 
-      #Draw border rectangles
+      # Draw border rectangles
       if showSelectRect:
             pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
       for selected in selectedSprites:
             pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
-      #Heads Up Display
+      # Heads Up Display
       for sprite in hudSprites:
             sprite.draw(DISPLAYSURF)
       scores = font.render(str(SCORE), True, BLACK)
       DISPLAYSURF.blit(scores, (20, 20))
 
-      #Update display
+      # Update display
+      manager.update(time_delta)
+      manager.draw_ui(DISPLAYSURF)
       pygame.display.update()
-      FramePerSec.tick(FPS)
