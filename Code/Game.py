@@ -42,7 +42,7 @@ DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Dungeon Fearing!")
 
 #Mouse stuff
-mouseModes = ["TeleportSelectedSprites","CenterAtMouse","SelectSprites"]
+mouseModes = ["TeleportSelectedSprites", "CenterAtMouse", "SelectSprites"]
 leftClickMode = "TeleportSelectedSprites"
 middleClickMode = "CenterAtMouse"
 rightClickMode = "SelectSprites"
@@ -225,6 +225,24 @@ gameSprites[0].add(MainCharacter)
 allies[0].add(MainCharacter)
 selectedSprites.add(MainCharacter)
 
+def teleportAllSprites(east, south):
+      for sprite in gameSprites[Realm]:
+            sprite.rect.left += east
+            sprite.rect.top += south
+
+def recenterAt(x, y):
+      teleportAllSprites(SCREEN_WIDTH // 2 - x, SCREEN_HEIGHT // 2 - y)
+
+def centerOfSelectedSprites():
+      if selectedSprites.__len__() > 0:
+            minLeft = min((o.rect.left for o in selectedSprites))
+            minTop = min((o.rect.top for o in selectedSprites))
+            maxRight = max((o.rect.right for o in selectedSprites))
+            maxBottom = max((o.rect.bottom for o in selectedSprites))
+            return (maxRight + minLeft) // 2, (maxBottom + minTop) // 2
+      else:
+            return SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
+
 #Game Loop
 while True:
       DISPLAYSURF.fill(FloorColor)
@@ -278,39 +296,31 @@ while True:
       if pressed_keys[pygame.key.key_code("D")]:
             for selected in selectedSprites:
                   selected.moveRight()
-      #Recenter on MainCharacter
+      #Recenter on center of selectedSprites
       if pressed_keys[pygame.key.key_code(" ")]:
-            teleportX = SCREEN_WIDTH//2-MainCharacter.rect.centerx
-            teleportY = SCREEN_HEIGHT//2-MainCharacter.rect.centery
-            for sprite in gameSprites[Realm]:
-                  sprite.rect.left += teleportX
-                  sprite.rect.top += teleportY
+            ssX, ssY = centerOfSelectedSprites()
+            recenterAt(ssX, ssY)
 
       #Cycles through all events occuring
       for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                   mx, my = pygame.mouse.get_pos()
                   if event.button == 1: #Left mouse button was pressed
-                        if leftClickMode == "TeleportSelectedSprites" and selectedSprites.__len__() > 0:
-                              minLeft = min((o.rect.left for o in selectedSprites))
-                              minTop = min((o.rect.top for o in selectedSprites))
-                              teleportX = mx - minLeft
-                              teleportY = my - minTop
+                        if leftClickMode == "TeleportSelectedSprites":
+                              ssX, ssY = centerOfSelectedSprites()
+                              teleportX = mx - ssX
+                              teleportY = my - ssY
                               for sprite in selectedSprites:
                                     sprite.rect.left += teleportX
                                     sprite.rect.top += teleportY
                   if event.button == 2: #Middle mouse button was pressed
                         if middleClickMode=="CenterAtMouse":
-                              teleportX = SCREEN_WIDTH//2-mx
-                              teleportY = SCREEN_HEIGHT//2-my
-                              for sprite in gameSprites[Realm]:
-                                    sprite.rect.left += teleportX
-                                    sprite.rect.top += teleportY
+                              recenterAt(mx, my)
                   if event.button == 3: #Right mouse button was pressed
                         if rightClickMode=="SelectSprites":
                               showSelectRect=True
                               selectRect.topleft = mx, my
-                              selectRect.width, selectRect.height = 0, 0
+                              selectRect.width, selectRect.height = 1, 1
             if event.type == pygame.MOUSEMOTION:
                   if showSelectRect: #Update selectRect
                         mx, my = pygame.mouse.get_pos()
