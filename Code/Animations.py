@@ -1,3 +1,5 @@
+import pygame
+
 class Animation(object):
       def __init__(self, imagePath, numberOfFrames, frameX, frameY, timeSpeed):
             loadedImage = pygame.image.load(imagePath)
