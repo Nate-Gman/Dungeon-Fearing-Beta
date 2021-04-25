@@ -107,6 +107,19 @@ while isRunning:
             # Draw border rectangles
             for selected in selectedAllies:
                   pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
+            # WASD movement of selected sprites
+            if pressed_keys[pygame.K_w]:
+                  for selected in selectedAllies:
+                        selected.moveUp()
+            if pressed_keys[pygame.K_a]:
+                  for selected in selectedAllies:
+                        selected.moveLeft()
+            if pressed_keys[pygame.K_s]:
+                  for selected in selectedAllies:
+                        selected.moveDown()
+            if pressed_keys[pygame.K_d]:
+                  for selected in selectedAllies:
+                        selected.moveRight()
             # Moves all Sprites
             for sprite in cr.gameSprites:
                   sprite.updateImage()
