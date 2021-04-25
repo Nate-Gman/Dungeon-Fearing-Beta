@@ -37,16 +37,21 @@ manager = pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Dungeon Fearing!")
 
 # Mouse stuff
-mouseModes = ["TeleportSelectedSprites", "CenterAtMouse", "SelectSprites"]
-leftClickMode = "TeleportSelectedSprites"
-middleClickMode = "CenterAtMouse"
-rightClickMode = "SelectSprites"
+EditMouseModes = ["TeleportSelectedSprites", "CenterAtMouse", "SelectSprites"]
+EditLeftClickMode = "TeleportSelectedSprites"
+EditMiddleClickMode = "CenterAtMouse"
+EditRightClickMode = "SelectSprites"
+PlayMouseModes = ["TeleportSelectedAllies", "CenterAtMouse", "SelectAllies"]
+PlayLeftClickMode = "TeleportSelectedAllies"
+PlayMiddleClickMode = "CenterAtMouse"
+PlayRightClickMode = "SelectAllies"
 selectRect = pygame.Rect(0,0,0,0)
 showSelectRect = False
 
 # Sprites Groups
 hudSprites = pygame.sprite.Group()
 selectedSprites = pygame.sprite.Group()
+selectedAllies = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
 # # hudSprites
@@ -63,12 +68,12 @@ def teleportAllSprites(east, south):
 def recenterAt(x, y):
       teleportAllSprites(SCREEN_WIDTH // 2 - x, SCREEN_HEIGHT // 2 - y)
 
-def centerOfSelectedSprites():
-      if selectedSprites.__len__() > 0:
-            minLeft = min((o.rect.left for o in selectedSprites))
-            minTop = min((o.rect.top for o in selectedSprites))
-            maxRight = max((o.rect.right for o in selectedSprites))
-            maxBottom = max((o.rect.bottom for o in selectedSprites))
+def centerOfSpriteGroup(sg : pygame.sprite.Group):
+      if sg.__len__() > 0:
+            minLeft = min((o.rect.left for o in sg))
+            minTop = min((o.rect.top for o in sg))
+            maxRight = max((o.rect.right for o in sg))
+            maxBottom = max((o.rect.bottom for o in sg))
             return (maxRight + minLeft) // 2, (maxBottom + minTop) // 2
       else:
             return SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
@@ -82,6 +87,12 @@ while isRunning:
       gameMode = gameModeDrop.selected_option
       time_delta = clock.tick(FPS) / 1000.0
       DISPLAYSURF.fill(FloorColor)
+      # User interface events
+      events = pygame.event.get()
+      for event in events:
+            manager.process_events(event)
+            if event.type == pygame.QUIT:
+                  isRunning = False
       # Action Keys
       pressed_keys = pygame.key.get_pressed()
       mx, my = pygame.mouse.get_pos()
@@ -89,7 +100,26 @@ while isRunning:
             # Re-draws all gameSprites
             for sprite in cr.gameSprites:
                   sprite.draw(DISPLAYSURF)
+            # Draw select rectangle
+            if showSelectRect:
+                  pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
       if gameMode == 'Play':
+            # Draw border rectangles
+            for selected in selectedAllies:
+                  pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
+            # WASD movement of selected sprites
+            if pressed_keys[pygame.K_w]:
+                  for selected in selectedAllies:
+                        selected.moveUp()
+            if pressed_keys[pygame.K_a]:
+                  for selected in selectedAllies:
+                        selected.moveLeft()
+            if pressed_keys[pygame.K_s]:
+                  for selected in selectedAllies:
+                        selected.moveDown()
+            if pressed_keys[pygame.K_d]:
+                  for selected in selectedAllies:
+                        selected.moveRight()
             # Moves all Sprites
             for sprite in cr.gameSprites:
                   sprite.updateImage()
@@ -123,6 +153,45 @@ while isRunning:
             for enemy in cr.enemies.copy():
                   if enemy.health <= 0:
                         enemy.kill()
+            # Cycles through all events occuring for mouse events
+            for event in events:
+                  if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1: # Left mouse button was pressed
+                              if PlayLeftClickMode == "TeleportSelectedAllies":
+                                    saX, saY = centerOfSpriteGroup(selectedAllies)
+                                    teleportX = mx - saX
+                                    teleportY = my - saY
+                                    for sprite in selectedAllies:
+                                          sprite.rect.left += teleportX
+                                          sprite.rect.top += teleportY
+                        if event.button == 2: # Middle mouse button was pressed
+                              if PlayMiddleClickMode == "CenterAtMouse":
+                                    recenterAt(mx, my)
+                        if event.button == 3: # Right mouse button was pressed
+                              if PlayRightClickMode == "SelectAllies":
+                                    showSelectRect = True
+                                    selectRect.topleft = mx, my
+                                    selectRect.width, selectRect.height = 1, 1
+                  if event.type == pygame.MOUSEMOTION:
+                        if showSelectRect: # Update selectRect
+                              selectRect.width = mx - selectRect.left
+                              selectRect.height = my - selectRect.top
+                  if event.type == pygame.MOUSEBUTTONUP:
+                        if event.button == 3: # Right mouse button was released
+                              if PlayRightClickMode == "SelectAllies":
+                                    showSelectRect = False
+                                    newSelectedAllies = pygame.sprite.Group()
+                                    for ally in cr.allies:
+                                          if selectRect.colliderect(ally.rect):
+                                                newSelectedAllies.add(ally)
+                                    if not pressed_keys[pygame.K_LCTRL]:
+                                          selectedAllies = newSelectedAllies
+                                    else:
+                                          for ally in newSelectedAllies:
+                                                if selectedAllies.has(ally):
+                                                      selectedAllies.remove(ally)
+                                                else:
+                                                      selectedAllies.add(ally)
             # Heads Up Display
             for sprite in hudSprites:
                   sprite.draw(DISPLAYSURF)
@@ -158,58 +227,50 @@ while isRunning:
                         selected.kill()
             # Recenter on center of selectedSprites
             if pressed_keys[pygame.K_SPACE]:
-                  ssX, ssY = centerOfSelectedSprites()
+                  ssX, ssY = centerOfSpriteGroup(selectedSprites)
                   recenterAt(ssX, ssY)
             # Draw border rectangles
-            if showSelectRect:
-                  pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
             for selected in selectedSprites:
                   pygame.draw.rect(DISPLAYSURF,BlueBorderColor,selected.rect,1)
-
-      # Cycles through all events occuring
-      for event in pygame.event.get():
-            manager.process_events(event)
-            if event.type == pygame.QUIT:
-                  isRunning = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                  if event.button == 1: # Left mouse button was pressed
-                        if leftClickMode == "TeleportSelectedSprites":
-                              ssX, ssY = centerOfSelectedSprites()
-                              teleportX = mx - ssX
-                              teleportY = my - ssY
-                              for sprite in selectedSprites:
-                                    sprite.rect.left += teleportX
-                                    sprite.rect.top += teleportY
-                  if event.button == 2: # Middle mouse button was pressed
-                        if middleClickMode=="CenterAtMouse":
-                              recenterAt(mx, my)
-                  if event.button == 3: # Right mouse button was pressed
-                        if rightClickMode=="SelectSprites":
-                              showSelectRect=True
-                              selectRect.topleft = mx, my
-                              selectRect.width, selectRect.height = 1, 1
-            if event.type == pygame.MOUSEMOTION:
-                  if showSelectRect: # Update selectRect
-                        mx, my = pygame.mouse.get_pos()
-                        selectRect.width = mx - selectRect.left
-                        selectRect.height = my - selectRect.top
-            if event.type == pygame.MOUSEBUTTONUP:
-                  mx, my = pygame.mouse.get_pos()
-                  if event.button == 3: # Right mouse button was released
-                        if rightClickMode == "SelectSprites":
-                              showSelectRect = False
-                              newSelectedSprites = pygame.sprite.Group()
-                              for sprite in cr.gameSprites:
-                                    if selectRect.colliderect(sprite.rect):
-                                          newSelectedSprites.add(sprite)
-                              if not pressed_keys[pygame.K_LCTRL]:
-                                    selectedSprites = newSelectedSprites
-                              else:
-                                    for sprite in newSelectedSprites:
-                                          if selectedSprites.has(sprite):
-                                                selectedSprites.remove(sprite)
-                                          else:
-                                                selectedSprites.add(sprite)
+            # Cycles through all events occuring for mouse events
+            for event in events:
+                  if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1: # Left mouse button was pressed
+                              if EditLeftClickMode == "TeleportSelectedSprites":
+                                    ssX, ssY = centerOfSpriteGroup(selectedSprites)
+                                    teleportX = mx - ssX
+                                    teleportY = my - ssY
+                                    for sprite in selectedSprites:
+                                          sprite.rect.left += teleportX
+                                          sprite.rect.top += teleportY
+                        if event.button == 2: # Middle mouse button was pressed
+                              if EditMiddleClickMode == "CenterAtMouse":
+                                    recenterAt(mx, my)
+                        if event.button == 3: # Right mouse button was pressed
+                              if EditRightClickMode == "SelectSprites":
+                                    showSelectRect = True
+                                    selectRect.topleft = mx, my
+                                    selectRect.width, selectRect.height = 1, 1
+                  if event.type == pygame.MOUSEMOTION:
+                        if showSelectRect: # Update selectRect
+                              selectRect.width = mx - selectRect.left
+                              selectRect.height = my - selectRect.top
+                  if event.type == pygame.MOUSEBUTTONUP:
+                        if event.button == 3: # Right mouse button was released
+                              if EditRightClickMode == "SelectSprites":
+                                    showSelectRect = False
+                                    newSelectedSprites = pygame.sprite.Group()
+                                    for sprite in cr.gameSprites:
+                                          if selectRect.colliderect(sprite.rect):
+                                                newSelectedSprites.add(sprite)
+                                    if not pressed_keys[pygame.K_LCTRL]:
+                                          selectedSprites = newSelectedSprites
+                                    else:
+                                          for sprite in newSelectedSprites:
+                                                if selectedSprites.has(sprite):
+                                                      selectedSprites.remove(sprite)
+                                                else:
+                                                      selectedSprites.add(sprite)
 
       # Update display
       manager.update(time_delta)
