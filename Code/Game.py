@@ -15,7 +15,7 @@ pygame.init()
 
 # Setting up FPS
 FPS = 22
-FramePerSec = pygame.time.Clock()
+clock = pygame.time.Clock()
 
 # colors
 BlueBorderColor = (3*16, 3*16+14, 5*16+9)
@@ -77,8 +77,10 @@ def centerOfSelectedSprites():
 isRunning = True
 gameModes = ['Edit','Play','Settings']
 gameMode = 'Edit'
+gameModeDrop = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(gameModes, gameMode, pygame.rect.Rect(0,0,100,39), manager)
 while isRunning:
-      time_delta = FramePerSec.tick(FPS)/1000.0
+      gameMode = gameModeDrop.selected_option
+      time_delta = clock.tick(FPS) / 1000.0
       DISPLAYSURF.fill(FloorColor)
       # Action Keys
       pressed_keys = pygame.key.get_pressed()
@@ -207,9 +209,6 @@ while isRunning:
                                                 selectedSprites.remove(sprite)
                                           else:
                                                 selectedSprites.add(sprite)
-
-      text = font.render("Mode: " + gameMode, True, BLACK)
-      DISPLAYSURF.blit(text, (20, 20))
 
       # Update display
       manager.update(time_delta)
