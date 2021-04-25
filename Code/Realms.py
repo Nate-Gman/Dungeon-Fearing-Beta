@@ -5,7 +5,8 @@ class Realm():
         self.name = name
         self.gameSprites = pygame.sprite.Group()
         self.Walls = pygame.sprite.Group()
-        self.Fountains = pygame.sprite.Group()
+        self.allyFountains = pygame.sprite.Group()
+        self.enemyFountains = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.allies = pygame.sprite.Group()
 
@@ -36,10 +37,15 @@ class Realm():
             exportFile.write('r.gameSprites.add(sp)\n')
             if self.Walls.has(sp):
                 exportFile.write('r.Walls.add(sp)\n')
-            if self.Fountains.has(sp):
-                exportFile.write('r.Fountains.add(sp)\n')
+            if self.allyFountains.has(sp):
+                exportFile.write('r.allyFountains.add(sp)\n')
+            if self.enemyFountains.has(sp):
+                exportFile.write('r.enemyFountains.add(sp)\n')
+            if strType == 'Fountain':
                 if sp.healBuff != Sprites.DefaultHealBuff:
                     exportFile.write('sp.healBuff = ' + str(sp.healBuff) + '\n')
+                if sp.manaBuff != Sprites.DefaultManaBuff:
+                    exportFile.write('sp.manaBuff = ' + str(sp.manaBuff) + '\n')
             if self.enemies.has(sp):
                 exportFile.write('r.enemies.add(sp)\n')
             if self.allies.has(sp):

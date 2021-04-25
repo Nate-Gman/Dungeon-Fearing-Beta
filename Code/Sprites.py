@@ -43,7 +43,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
             surf.blit(self.image, self.rect)
 
       def move(self):
-            self.updateImage()
+            return True
+
+      def copy(self):
+            return AnimatedSprite(self.animationName, self.rect.left, self.rect.top)
 
 DefaultMaxMana = 100
 DefaultMaxHealth = 100
@@ -73,70 +76,25 @@ class MagicalCreature(AnimatedSprite):
       def meleeFight(self, opponent):
             opponent.damage(self.meleeDamage)
             self.damage(opponent.meleeDamage)
+
+      def copy(self):
+            mc = MagicalCreature(self.animationName, self.rect.left, self.rect.top)
+            mc.mana = self.mana
+            mc.maxMana = self.maxMana
+            mc.health = self.health
+            mc.maxHealth = self.maxHealth
+            mc.meleeDamage = self.meleeDamage
+            return mc
+
 ##hudSprites
 class Displayer(AnimatedSprite):
       def __init__(self, spawnX, spawnY):
             super().__init__("Port1",spawnX,spawnY)
 
-class Inventory(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("PInvt",spawnX,spawnY)
-
-class Skills(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("PSkill",spawnX,spawnY)
-##MapBuild
-class Wall(AnimatedSprite):
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__(animationName,spawnX,spawnY)
-##Foes
-class Goblin(MagicalCreature):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("GoblinR",spawnX,spawnY)
-
-class Demon(MagicalCreature):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("DemonL",spawnX,spawnY)
-## Interactive
-class FloorSpike(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Spike",spawnX,spawnY)
-
-class FloorSpikeSafer(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("SSafer",spawnX,spawnY)
-
 DefaultHealBuff = 10
+DefaultManaBuff = 10
 class Fountain(AnimatedSprite):
       def __init__(self, animationName, spawnX, spawnY):
             super().__init__(animationName,spawnX,spawnY)
             self.healBuff = DefaultHealBuff
-
-class Chest(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Chest",spawnX,spawnY)
-##Misc
-class HPotion(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("HPOT",spawnX,spawnY)
-
-class MPotion(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("MPOT",spawnX,spawnY)
-
-class Experience(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("ExpP",spawnX,spawnY)
-
-class HitPoints(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("Life",spawnX,spawnY)
-
-class ManaPoints(AnimatedSprite):
-      def __init__(self, spawnX, spawnY):
-            super().__init__("ManaP",spawnX,spawnY)
-
-class Player(MagicalCreature):
-      def __init__(self,spawnX,spawnY):
-            super().__init__("Player1",spawnX,spawnY)
-            self.meleeDamage = 2
+            self.manaBuff = DefaultManaBuff
