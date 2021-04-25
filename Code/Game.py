@@ -92,6 +92,7 @@ while isRunning:
       if gameMode == 'Play':
             # Moves all Sprites
             for sprite in cr.gameSprites:
+                  sprite.updateImage()
                   sprite.move()
                   # Walls push sprites around, thus walls will push walls around
                   for wall in cr.Walls:
