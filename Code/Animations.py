@@ -23,13 +23,13 @@ animations = {
       "ManaP": Animation("../Graphics/Images/ManaBarTile20x18.png",10,0.3),
       #NPC
       "NPC_HPD": Animation("../Graphics/Images/EnemyHealthDisplay84x8.png",1,0),
-      "NPC_HP": Animation("../Graphics/Images/EnemyHealth82x6.png",4,0.1),
+      "NPC_HP": Animation("../Graphics/Images/EnemyHealth82x6.png",4,0.3),
       #Shop
-      "ShopKeep": Animation("../Graphics/Images/ShopKeepStand39x61.png",4,0.1),
+      "ShopKeep": Animation("../Graphics/Images/ShopKeepStand39x61.png",4,0.2),
       #Enemy
       "GoblinR": Animation("../Graphics/Images/GoblinR.png",5,0.3),
       "DemonL": Animation("../Graphics/Images/DemonLTile43x32.png",6,0.3),
-      "GhostDeath": Animation("../Graphics/Images/GhostDeath43x56.png",9,0.3),
+      "GhostDeath": Animation("../Graphics/Images/GhostDeath43x56.png",9,0.4),
       #Misc
       "HPOT": Animation("../Graphics/Images/LessHealPotTile14x23.png",9,0.4),
       "MPOT": Animation("../Graphics/Images/LessManaPotTile 14x23.png",9,0.4),
