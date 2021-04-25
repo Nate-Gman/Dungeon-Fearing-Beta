@@ -98,3 +98,15 @@ class Fountain(AnimatedSprite):
             super().__init__(animationName,spawnX,spawnY)
             self.healBuff = DefaultHealBuff
             self.manaBuff = DefaultManaBuff
+
+
+# Returns the smallest rectangle surrounding a group of sprites
+def SpriteGroupRect(sg : pygame.sprite.Group):
+      if sg.__len__() > 0:
+            minLeft = min((o.rect.left for o in sg))
+            minTop = min((o.rect.top for o in sg))
+            maxRight = max((o.rect.right for o in sg))
+            maxBottom = max((o.rect.bottom for o in sg))
+            return pygame.rect.Rect(minLeft, minTop, maxRight - minLeft, maxBottom - minTop)
+      else:
+            return pygame.rect.Rect(0, 0, 0, 0)

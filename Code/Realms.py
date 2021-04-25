@@ -1,4 +1,4 @@
-import pygame, Sprites
+import pygame, Sprites, Settings
 
 class Realm():
     def __init__(self, name):
@@ -51,3 +51,20 @@ class Realm():
             if self.allies.has(sp):
                 exportFile.write('r.allies.add(sp)\n')
         exportFile.close()
+
+    def teleportAllSprites(self, east, south):
+        if east == 0 and south == 0: # Sometimes save computation
+                return
+        for sprite in self.gameSprites:
+                sprite.rect.left += east
+                sprite.rect.top += south
+
+    def PrintRealmToSurface(self):
+        AllSpriteRect = Sprites.SpriteGroupRect(self.gameSprites)
+        OutSurface = pygame.surface.Surface(AllSpriteRect.size)
+        OutSurface.fill(Settings.FloorColor)
+        self.teleportAllSprites(-AllSpriteRect.left, -AllSpriteRect.top)
+        for sprite in self.gameSprites:
+                sprite.draw(OutSurface)
+        self.teleportAllSprites(AllSpriteRect.left, AllSpriteRect.top)
+        return OutSurface

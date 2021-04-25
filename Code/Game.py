@@ -7,7 +7,7 @@
 # Imports
 import sys, math, random, time
 import pygame, pygame_gui
-import Animations, Sprites as sp, Realms as r
+import Animations, Sprites as sp, Realms as r, Settings
 import ExportedRealm0
 
 # Initialzing
@@ -19,7 +19,6 @@ clock = pygame.time.Clock()
 
 # colors
 BlueBorderColor = (3*16, 3*16+14, 5*16+9)
-FloorColor = (117, 85, 85)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
@@ -58,25 +57,12 @@ clickable = pygame.sprite.Group()
 PD = sp.AnimatedSprite("Port1", 0, 100)
 hudSprites.add(PD)
 
-def teleportAllSprites(east, south):
-      if east == 0 and south == 0: # Sometimes save computation
-            return
-      for sprite in cr.gameSprites:
-            sprite.rect.left += east
-            sprite.rect.top += south
-
 def recenterAt(x, y):
-      teleportAllSprites(SCREEN_WIDTH // 2 - x, SCREEN_HEIGHT // 2 - y)
+      cr.teleportAllSprites(SCREEN_WIDTH // 2 - x, SCREEN_HEIGHT // 2 - y)
 
-def centerOfSpriteGroup(sg : pygame.sprite.Group):
-      if sg.__len__() > 0:
-            minLeft = min((o.rect.left for o in sg))
-            minTop = min((o.rect.top for o in sg))
-            maxRight = max((o.rect.right for o in sg))
-            maxBottom = max((o.rect.bottom for o in sg))
-            return (maxRight + minLeft) // 2, (maxBottom + minTop) // 2
-      else:
-            return SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
+def OutputRealmToPNG():
+      rs = cr.PrintRealmToSurface()
+      pygame.image.save(rs, 'Realm' + cr.name + '.png')
 
 # Game Loop
 isRunning = True
@@ -86,7 +72,7 @@ gameModeDrop = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(gameModes, g
 while isRunning:
       gameMode = gameModeDrop.selected_option
       time_delta = clock.tick(FPS) / 1000.0
-      DISPLAYSURF.fill(FloorColor)
+      DISPLAYSURF.fill(Settings.FloorColor)
       # User interface events
       events = pygame.event.get()
       for event in events:
@@ -103,6 +89,8 @@ while isRunning:
             # Draw select rectangle
             if showSelectRect:
                   pygame.draw.rect(DISPLAYSURF,GREEN,selectRect,1)
+            if pressed_keys[pygame.K_p]:
+                  OutputRealmToPNG()
       if gameMode == 'Play':
             # Draw border rectangles
             for selected in selectedAllies:
@@ -120,6 +108,10 @@ while isRunning:
             if pressed_keys[pygame.K_d]:
                   for selected in selectedAllies:
                         selected.moveRight()
+            # Recenter on center of selectedSprites
+            if pressed_keys[pygame.K_SPACE]:
+                  ssX, ssY = sp.SpriteGroupRect(selectedSprites).center
+                  recenterAt(ssX, ssY)
             # Moves all Sprites
             for sprite in cr.gameSprites:
                   sprite.updateImage()
@@ -158,7 +150,7 @@ while isRunning:
                   if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1: # Left mouse button was pressed
                               if PlayLeftClickMode == "TeleportSelectedAllies":
-                                    saX, saY = centerOfSpriteGroup(selectedAllies)
+                                    saX, saY = sp.SpriteGroupRect(selectedAllies).center
                                     teleportX = mx - saX
                                     teleportY = my - saY
                                     for sprite in selectedAllies:
@@ -227,7 +219,7 @@ while isRunning:
                         selected.kill()
             # Recenter on center of selectedSprites
             if pressed_keys[pygame.K_SPACE]:
-                  ssX, ssY = centerOfSpriteGroup(selectedSprites)
+                  ssX, ssY = sp.SpriteGroupRect(selectedSprites).center
                   recenterAt(ssX, ssY)
             # Draw border rectangles
             for selected in selectedSprites:
@@ -237,7 +229,7 @@ while isRunning:
                   if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1: # Left mouse button was pressed
                               if EditLeftClickMode == "TeleportSelectedSprites":
-                                    ssX, ssY = centerOfSpriteGroup(selectedSprites)
+                                    ssX, ssY = sp.SpriteGroupRect(selectedSprites).center
                                     teleportX = mx - ssX
                                     teleportY = my - ssY
                                     for sprite in selectedSprites:
