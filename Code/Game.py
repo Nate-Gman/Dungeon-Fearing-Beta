@@ -14,7 +14,7 @@ import ExportedRealm0
 pygame.init()
 
 # Setting up FPS
-FPS = 22
+FPS = 9
 clock = pygame.time.Clock()
 
 # colors
@@ -129,8 +129,9 @@ while isRunning:
                         if pygame.sprite.collide_rect(wall, sprite):
                               WX,WY = wall.rect.center
                               sX,sY = sprite.rect.center
-                              MoveX=sX-WX
-                              MoveY=sY-WY
+                              WallForceRatio = 0.15 # Slow down wall force
+                              MoveX = math.ceil((sX - WX) * WallForceRatio)
+                              MoveY = math.ceil((sY - WY) * WallForceRatio)
                               sprite.rect.move_ip(MoveX, MoveY)
             # Fountain
             for ally in cr.allies:

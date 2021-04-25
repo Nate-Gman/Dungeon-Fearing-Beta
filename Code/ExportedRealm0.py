@@ -5,90 +5,183 @@ import Sprites as s, Realms
 r = Realms.Realm('0')
 
 #
-sp = s.MagicalCreature('GoblinR', 912, 980)
+sp = s.AnimatedSprite('ShopKeep', 756, 720)
+r.gameSprites.add(sp)
+#
+sp = s.AnimatedSprite('NPC_HPD', 514, 273)
+r.gameSprites.add(sp)
+#
+sp = s.AnimatedSprite('NPC_HP', 518, 274)
+r.gameSprites.add(sp)
+#
+sp = s.MagicalCreature('GoblinR', 451, 308)
 r.gameSprites.add(sp)
 r.enemies.add(sp)
 #
-sp = s.MagicalCreature('DemonL', 847, 972)
+sp = s.MagicalCreature('DemonL', 707, 293)
 r.gameSprites.add(sp)
 r.enemies.add(sp)
 #
-sp = s.Fountain('Fountain', 1011, 567)
+sp = s.MagicalCreature('GhostDeath', 523, 290)
+r.gameSprites.add(sp)
+r.enemies.add(sp)
+#
+sp = s.Fountain('Fountain', 164, 103)
 r.gameSprites.add(sp)
 r.allyFountains.add(sp)
 #
-sp = s.AnimatedSprite('HPOT', 1252, 960)
+sp = s.Fountain('RedFountain', 164, 103)
+r.gameSprites.add(sp)
+r.allyFountains.add(sp)
+#
+sp = s.AnimatedSprite('HPOT', 820, 773)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('MPOT', 1219, 957)
+sp = s.AnimatedSprite('MPOT', 697, 786)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('Chest', 952, 760)
+sp = s.AnimatedSprite('Chest', 834, 479)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('Spike', 1348, 848)
+sp = s.AnimatedSprite('Spike', 380, 420)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('SSafer', 1288, 848)
+sp = s.AnimatedSprite('SSafer', 260, 420)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('WA1', 82, 927)
-r.gameSprites.add(sp)
-r.Walls.add(sp)
-#
-sp = s.AnimatedSprite('WA2', -88, 661)
-r.gameSprites.add(sp)
-r.Walls.add(sp)
-#
-sp = s.AnimatedSprite('WA3', 109, 331)
+sp = s.AnimatedSprite('WA1', 52, 233)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA4', 451, 13)
+sp = s.AnimatedSprite('WA2', 339, -612)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA5', 680, 130)
+sp = s.AnimatedSprite('WA3', -1431, -831)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA6', 252, 1160)
+sp = s.AnimatedSprite('WA4', 766, -1153)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA7', 552, 260)
+sp = s.AnimatedSprite('WA5', 235, -775)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA8', 252, -40)
+sp = s.AnimatedSprite('WA6', -559, 544)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('WA9', -248, -540)
+sp = s.AnimatedSprite('WA7', 501, -373)
 r.gameSprites.add(sp)
 r.Walls.add(sp)
 #
-sp = s.AnimatedSprite('PInvt', 437, 582)
+sp = s.AnimatedSprite('WA8', 1198, 588)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA9', -1044, -1657)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA10', -1166, -664)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA11', 1401, -1084)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA12', -3034, -41)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA13', -3034, -41)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('HWA6A', 501, -575)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA2AB', 400, 1673)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('HWA4C', -1557, 1581)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('HWA4D', -725, -1216)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('HWA4E', -2517, 862)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('HWA4F', 235, -1376)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('VWA4G', -1557, 1022)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('VWA6H', 271, 713)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('VWA6I', 959, 713)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('VWA2J', 1060, -575)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('VWA2K', 1060, -575)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('PInvt', 493, 1136)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('PSkill', 231, 621)
+sp = s.AnimatedSprite('PSkill', 468, 786)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('ExpP', 1328, 591)
+sp = s.AnimatedSprite('ExpP', 437, 576)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('Life', 1328, 614)
+sp = s.AnimatedSprite('Life', 438, 594)
 r.gameSprites.add(sp)
 #
-sp = s.AnimatedSprite('ManaP', 1328, 645)
+sp = s.AnimatedSprite('ManaP', 435, 618)
 r.gameSprites.add(sp)
 #
-sp = s.MagicalCreature('Player1', 1003, 405)
+sp = s.MagicalCreature('Player1', -1777, -297)
 sp.meleeDamage = 2
 r.gameSprites.add(sp)
 r.allies.add(sp)
 #
-sp = s.MagicalCreature('Player1', 867, 590)
+sp = s.MagicalCreature('Player1', 503, 416)
 sp.meleeDamage = 2
 r.gameSprites.add(sp)
 r.allies.add(sp)
+#
+sp = s.AnimatedSprite('WA3', -1111, -109)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA3', -49, 46)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA3', -37, 398)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
+#
+sp = s.AnimatedSprite('WA3', -1419, -479)
+r.gameSprites.add(sp)
+r.Walls.add(sp)
