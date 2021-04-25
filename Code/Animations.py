@@ -22,17 +22,24 @@ animations = {
       "Life": Animation("../Graphics/Images/HealthBarTile 20x18.png",10,0.3),
       "ManaP": Animation("../Graphics/Images/ManaBarTile20x18.png",10,0.3),
       #NPC
-      "GoblinR": Animation("../Graphics/Images/GoblinR.png",5,0.4),
-      "DemonL": Animation("../Graphics/Images/DemonLTile43x32.png",6,0.4),
+      "NPC_HPD": Animation("../Graphics/Images/EnemyHealthDisplay84x8.png",1,0),
+      "NPC_HP": Animation("../Graphics/Images/EnemyHealth82x6.png",4,0.1),
+      #Shop
+      "ShopKeep": Animation("../Graphics/Images/ShopKeepStand39x61.png",4,0.1),
+      #Enemy
+      "GoblinR": Animation("../Graphics/Images/GoblinR.png",5,0.3),
+      "DemonL": Animation("../Graphics/Images/DemonLTile43x32.png",6,0.3),
+      "GhostDeath": Animation("../Graphics/Images/GhostDeath43x56.png",9,0.3),
       #Misc
       "HPOT": Animation("../Graphics/Images/LessHealPotTile14x23.png",9,0.4),
       "MPOT": Animation("../Graphics/Images/LessManaPotTile 14x23.png",9,0.4),
       #Interactive
+      "RedFountain": Animation("../Graphics/Images/RedFountainTile142x111.png",4,0.2),
       "Fountain": Animation("../Graphics/Images/Fountain.png",5,0.3),
       "Chest": Animation("../Graphics/Images/ChestClosed 20x20.png",1,0),
       "Spike": Animation("../Graphics/Tile_set/Floor_Spike.png",8,0.08),
       "SSafer": Animation("../Graphics/Tile_set/Floor_Spike_Safer.png",12,0.08),
-      #WALLTILES
+      #WallTILES
       "Wall": Animation("../Graphics/Tile_set/Wall.png",1,0),
       "WallCL": Animation("../Graphics/Tile_set/WallCL.png",1,0),
       "WallCR": Animation("../Graphics/Tile_set/WallCR.png",1,0),
@@ -59,4 +66,19 @@ animations = {
       "WA7": Animation("../Graphics/Finished_walls/LargeSquareWall320x279.png",1,0),
       "WA8": Animation("../Graphics/Finished_walls/Virtical160x279.png",1,0),
       "WA9": Animation("../Graphics/Finished_walls/LongVerticalWall160x879.png",1,0),
+      "WA10": Animation("../Graphics/Finished_walls/CliffHole1280X400.png",1,0),
+      "WA11": Animation("../Graphics/Finished_walls/HorizontalWall1 559x232.png",1,0),
+      "WA12": Animation("../Graphics/Finished_walls/HugeTallWall1280X400.png",1,0),
+      #Connect A Wall
+      "WA1A": Animation("../Graphics/Finished_walls/HorizontalWall1 160x559.png",1,0),
+      "WA1B": Animation("../Graphics/Finished_walls/LowerLeftWall1 1120x160.png",1,0),
+      "WA1C": Animation("../Graphics/Finished_walls/LowerRightWall1 1120x160.png",1,0),
+      "WA1D": Animation("../Graphics/Finished_walls/UpperLeftWall1 1120x160.png",1,0),
+      "WA1E": Animation("../Graphics/Finished_walls/UpperRightWall1 1120x160.png",1,0),
+      "WA1F": Animation("../Graphics/Finished_walls/UWallLower1120x72.png",1,0),
+      "WA1G": Animation("../Graphics/Finished_walls/VerticalWall1 160x559.png",1,0),
+      "WA2H": Animation("../Graphics/Finished_walls/VerticalWallLeft 129x 1120.png",1,0),
+      "WA2I": Animation("../Graphics/Finished_walls/VerticalWallRight 129x 1120.png",1,0),
+      "WA2J": Animation("../Graphics/Finished_walls/VerticalWallTopLeft 129x 1120.png",1,0),
+      "WA2K": Animation("../Graphics/Finished_walls/VerticalWallTopRight 129x 1120.png",1,0),
       }
