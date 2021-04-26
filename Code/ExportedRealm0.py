@@ -30,7 +30,7 @@ sp = s.Fountain('Fountain', 164, 103)
 r.gameSprites.add(sp)
 r.allyFountains.add(sp)
 #
-sp = s.Fountain('RedFountain', 164, 103)
+sp = s.Fountain('RedFountain', 200, 200)
 r.gameSprites.add(sp)
 r.allyFountains.add(sp)
 #
