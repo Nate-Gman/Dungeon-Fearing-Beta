@@ -28,6 +28,9 @@ Some sprites called walls push other sprites away.
 # How to run the game
 In the Code folder, run `python Game.py`
 
+# Screenshot
+![Screenshot](Screenshot%20from%202021-04-25%2015-13-35.png?raw=true "Screenshot")
+
 # Current Features
 Animations
 
@@ -35,7 +38,7 @@ Health
 
 Mana
 
-Enemys
+Enemies
 
 # To do
 Skills
