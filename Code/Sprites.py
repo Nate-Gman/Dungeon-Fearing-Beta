@@ -1,6 +1,14 @@
-import pygame, math, Animations
+import pygame, math, Animations, random
 
-class AnimatedSprite(pygame.sprite.Sprite):
+DefaultMovementSpeed = 1
+DefaultMoveMode = 'Stay'
+DefaultMaxMana = 100
+DefaultMaxHealth = 100
+DefaultMeleeDamage = 1
+DefaultHealBuff = 10
+DefaultManaBuff = 10
+
+class AnimatedMagicalCreatureSprite(pygame.sprite.Sprite):
       def changeAnimation(self, animationName):
             self.animationName = animationName
             self.image = Animations.animations[animationName].frames[0]
@@ -11,10 +19,19 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.animationName = animationName
             self.spawnX = spawnX
             self.spawnY = spawnY
-            self.movementSpeed = 1 #default movement 1 pixel per movement
+            self.movementSpeed = DefaultMovementSpeed
+            self.targetSprite = None
+            self.moveMode = DefaultMoveMode
             self.animationTick = 0
             self.changeAnimation(animationName)
             self.rect = self.surf.get_rect(topleft=(spawnX, spawnY))
+            self.mana = DefaultMaxMana
+            self.maxMana = DefaultMaxMana
+            self.health = DefaultMaxHealth
+            self.maxHealth = DefaultMaxHealth
+            self.meleeDamage = DefaultMeleeDamage
+            self.healBuff = DefaultHealBuff
+            self.manaBuff = DefaultManaBuff
 
       def setMovementSpeed(self,speed):
             self.movementSpeed = speed
@@ -32,7 +49,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self.rect.y -= self.movementSpeed
 
       def recenterAt(self,X,Y):
-            self.rect = self.surf.get_rect(center=(spawnX, spawnY))
+            self.rect = self.surf.get_rect(center=(X, Y))
 
       def updateImage(self):
             self.animationTick += 1
@@ -43,23 +60,18 @@ class AnimatedSprite(pygame.sprite.Sprite):
             surf.blit(self.image, self.rect)
 
       def move(self):
+            match self.moveMode:
+                  case 'Stay':
+                        return None
+                  case 'RandomWalk':
+                        return None
+                  case 'MoveWithInerta':
+                        return None
+                  case 'MoveToTarget':
+                        return None
+                  case 'MoveAndTeleportToTarget':
+                        return None
             return True
-
-      def copy(self):
-            return AnimatedSprite(self.animationName, self.rect.left, self.rect.top)
-
-DefaultMaxMana = 100
-DefaultMaxHealth = 100
-DefaultMeleeDamage = 1
-
-class MagicalCreature(AnimatedSprite):
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__(animationName,spawnX,spawnY)
-            self.mana = DefaultMaxMana
-            self.maxMana = DefaultMaxMana
-            self.health = DefaultMaxHealth
-            self.maxHealth = DefaultMaxHealth
-            self.meleeDamage = DefaultMeleeDamage
 
       def refillMana(self, amount):
             self.mana = min(self.maxMana, self.mana + amount)
@@ -78,7 +90,7 @@ class MagicalCreature(AnimatedSprite):
             self.damage(opponent.meleeDamage)
 
       def copy(self):
-            mc = MagicalCreature(self.animationName, self.rect.left, self.rect.top)
+            mc = AnimatedMagicalCreatureSprite(self.animationName, self.rect.left, self.rect.top)
             mc.mana = self.mana
             mc.maxMana = self.maxMana
             mc.health = self.health
@@ -87,18 +99,9 @@ class MagicalCreature(AnimatedSprite):
             return mc
 
 ##hudSprites
-class Displayer(AnimatedSprite):
+class Displayer(AnimatedMagicalCreatureSprite):
       def __init__(self, spawnX, spawnY):
             super().__init__("Port1",spawnX,spawnY)
-
-DefaultHealBuff = 10
-DefaultManaBuff = 10
-class Fountain(AnimatedSprite):
-      def __init__(self, animationName, spawnX, spawnY):
-            super().__init__(animationName,spawnX,spawnY)
-            self.healBuff = DefaultHealBuff
-            self.manaBuff = DefaultManaBuff
-
 
 # Returns the smallest rectangle surrounding a group of sprites
 def SpriteGroupRect(sg : pygame.sprite.Group):

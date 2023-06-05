@@ -54,7 +54,7 @@ selectedAllies = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
 # # hudSprites
-PD = sp.AnimatedSprite("Port1", 1468, 862)
+PD = sp.AnimatedMagicalCreatureSprite("Port1", 1468, 862)
 hudSprites.add(PD)
 
 def recenterAt(x, y):
