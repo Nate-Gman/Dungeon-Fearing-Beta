@@ -64,7 +64,20 @@ class AnimatedMagicalCreatureSprite(pygame.sprite.Sprite):
                   case 'Stay':
                         return None
                   case 'RandomWalk':
-                        return None
+                        match random.randint(1,3):
+                              case 1:
+                                    self.moveLeft()
+                              case 0:
+                                    return None
+                              case 1:
+                                    self.moveRight()
+                        match random.randint(1,3):
+                              case 1:
+                                    self.moveUp()
+                              case 0:
+                                    return None
+                              case 1:
+                                    self.moveDown()
                   case 'MoveWithInerta':
                         return None
                   case 'MoveToTarget':
