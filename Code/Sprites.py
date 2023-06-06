@@ -62,29 +62,28 @@ class AnimatedMagicalCreatureSprite(pygame.sprite.Sprite):
       def move(self):
             match self.moveMode:
                   case 'Stay':
-                        return None
+                        pass
                   case 'RandomWalk':
                         match random.randint(1,3):
                               case 1:
                                     self.moveLeft()
-                              case 0:
-                                    return None
-                              case 1:
+                              case 2:
+                                    pass
+                              case 3:
                                     self.moveRight()
                         match random.randint(1,3):
                               case 1:
                                     self.moveUp()
-                              case 0:
-                                    return None
-                              case 1:
+                              case 2:
+                                    pass
+                              case 3:
                                     self.moveDown()
                   case 'MoveToFixedDirection':
-                        return None
+                        pass
                   case 'MoveToTarget':
-                        return None
+                        pass
                   case 'MoveAndTeleportToTarget':
-                        return None
-            return True
+                        pass
 
       def refillMana(self, amount):
             self.mana = min(self.maxMana, self.mana + amount)
