@@ -15,14 +15,20 @@ sp = s.AnimatedMagicalCreatureSprite('NPC_HP', 518, 274)
 r.gameSprites.add(sp)
 #
 sp = s.AnimatedMagicalCreatureSprite('GoblinR', 451, 308)
+sp.moveMode = 'RandomWalk'
+sp.setMovementSpeed(15)
 r.gameSprites.add(sp)
 r.enemies.add(sp)
 #
 sp = s.AnimatedMagicalCreatureSprite('DemonL', 707, 293)
+sp.moveMode = 'RandomWalk'
+sp.setMovementSpeed(15)
 r.gameSprites.add(sp)
 r.enemies.add(sp)
 #
 sp = s.AnimatedMagicalCreatureSprite('GhostDeath', 523, 290)
+sp.moveMode = 'RandomWalk'
+sp.setMovementSpeed(15)
 r.gameSprites.add(sp)
 r.enemies.add(sp)
 #
