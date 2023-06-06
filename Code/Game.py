@@ -54,7 +54,7 @@ selectedAllies = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
 # # hudSprites
-PD = sp.AnimatedMagicalCreatureSprite("Port1", 1468, 862)
+PD = sp.Displayer(1468, 862)
 hudSprites.add(PD)
 
 def recenterAt(x, y):
@@ -186,6 +186,9 @@ while isRunning:
                                                 else:
                                                       selectedAllies.add(ally)
             # Heads Up Display
+            if len(selectedAllies) > 0:
+                  PD.manaRatio = sp.SpriteGroupManaPercant(selectedAllies)
+                  PD.healthRatio = sp.SpriteGroupHealthPercant(selectedAllies)
             for sprite in hudSprites:
                   sprite.draw(DISPLAYSURF)
 
