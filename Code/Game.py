@@ -196,16 +196,16 @@ while isRunning:
             # WASD movement of selected sprites
             if pressed_keys[pygame.K_w]:
                   for selected in selectedSprites:
-                        selected.moveUp()
+                        selected.rect.y -= 1
             if pressed_keys[pygame.K_a]:
                   for selected in selectedSprites:
-                        selected.moveLeft()
+                        selected.rect.x -= 1
             if pressed_keys[pygame.K_s]:
                   for selected in selectedSprites:
-                        selected.moveDown()
+                        selected.rect.y += 1
             if pressed_keys[pygame.K_d]:
                   for selected in selectedSprites:
-                        selected.moveRight()
+                        selected.rect.x += 1
             # Copy selectedSprites
             if pressed_keys[pygame.K_c]:
                   for selected in selectedSprites:

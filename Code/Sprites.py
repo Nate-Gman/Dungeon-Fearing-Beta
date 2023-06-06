@@ -78,7 +78,7 @@ class AnimatedMagicalCreatureSprite(pygame.sprite.Sprite):
                                     return None
                               case 1:
                                     self.moveDown()
-                  case 'MoveWithInerta':
+                  case 'MoveToFixedDirection':
                         return None
                   case 'MoveToTarget':
                         return None
