@@ -71,7 +71,6 @@ gameMode = 'Edit'
 gameModeDrop = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(gameModes, gameMode, pygame.rect.Rect(0,0,100,39), manager)
 while isRunning:
       gameMode = gameModeDrop.selected_option[0]
-      print(gameMode)
       time_delta = clock.tick(FPS) / 1000.0
       DISPLAYSURF.fill(Settings.FloorColor)
       # User interface events
