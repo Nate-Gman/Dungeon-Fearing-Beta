@@ -54,7 +54,7 @@ selectedAllies = pygame.sprite.Group()
 clickable = pygame.sprite.Group()
 
 # # hudSprites
-PD = sp.AnimatedSprite("Port1", 1468, 862)
+PD = sp.Displayer(1468, 862)
 hudSprites.add(PD)
 
 def recenterAt(x, y):
@@ -70,7 +70,7 @@ gameModes = ['Edit','Play','Settings']
 gameMode = 'Edit'
 gameModeDrop = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(gameModes, gameMode, pygame.rect.Rect(0,0,100,39), manager)
 while isRunning:
-      gameMode = gameModeDrop.selected_option
+      gameMode = gameModeDrop.selected_option[0]
       time_delta = clock.tick(FPS) / 1000.0
       DISPLAYSURF.fill(Settings.FloorColor)
       # User interface events
@@ -186,6 +186,9 @@ while isRunning:
                                                 else:
                                                       selectedAllies.add(ally)
             # Heads Up Display
+            if len(selectedAllies) > 0:
+                  PD.manaRatio = sp.SpriteGroupManaPercant(selectedAllies)
+                  PD.healthRatio = sp.SpriteGroupHealthPercant(selectedAllies)
             for sprite in hudSprites:
                   sprite.draw(DISPLAYSURF)
 
@@ -196,16 +199,16 @@ while isRunning:
             # WASD movement of selected sprites
             if pressed_keys[pygame.K_w]:
                   for selected in selectedSprites:
-                        selected.moveUp()
+                        selected.rect.y -= 1
             if pressed_keys[pygame.K_a]:
                   for selected in selectedSprites:
-                        selected.moveLeft()
+                        selected.rect.x -= 1
             if pressed_keys[pygame.K_s]:
                   for selected in selectedSprites:
-                        selected.moveDown()
+                        selected.rect.y += 1
             if pressed_keys[pygame.K_d]:
                   for selected in selectedSprites:
-                        selected.moveRight()
+                        selected.rect.x += 1
             # Copy selectedSprites
             if pressed_keys[pygame.K_c]:
                   for selected in selectedSprites:
